@@ -50,10 +50,9 @@ export const BurgerConstructor: FC = () => {
     dispatch(createOrder(ingredientIds));
   };
 
-  // Закрытие модального окна заказа
+  // Закрытие модального окна заказа (конструктор очищается в Thunk)
   const closeOrderModal = () => {
     dispatch(clearOrder());
-    dispatch(clearConstructor());
   };
 
   // Вычисление итоговой цены
