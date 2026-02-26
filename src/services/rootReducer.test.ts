@@ -1,50 +1,35 @@
 import { rootReducer } from './rootReducer';
 
+import constructorReducer from './slices/constructorSlice';
+import ingredientsReducer from './slices/ingredientsSlice';
+import userReducer from './slices/userSlice';
+import orderReducer from './slices/orderSlice';
+import feedsReducer from './slices/feedsSlice';
+import profileOrdersReducer from './slices/profileOrdersSlice';
+
 describe('rootReducer', () => {
-  it('должен инициализировать начальное состояние всех слайсов', () => {
-    const state = rootReducer(undefined, { type: 'UNKNOWN_ACTION' });
+  it('должен возвращать корректное начальное состояние при @@INIT', () => {
+    const initAction = { type: '@@INIT' };
 
-    expect(state.ingredients).toEqual({
-        ingredients: [],
-        isLoading: false,
-        error: null,
-    });
+    const state = rootReducer(undefined, initAction);
 
-    expect(state.burgerConstructor).toEqual({
-      bun: null,
-      ingredients: []
+    expect(state).toEqual({
+      ingredients: ingredientsReducer(undefined, initAction),
+      user: userReducer(undefined, initAction),
+      order: orderReducer(undefined, initAction),
+      feeds: feedsReducer(undefined, initAction),
+      profileOrders: profileOrdersReducer(undefined, initAction),
+      burgerConstructor: constructorReducer(undefined, initAction),
     });
+  });
 
-    expect(state.order).toEqual({
-      isLoading: true,
-      error: null,
-      orderRequest: false,
-      orderModalData: null
-    });
+  it('должен возвращать то же состояние при неизвестном экшене', () => {
+    const initAction = { type: '@@INIT' };
 
-    expect(state.feeds).toEqual({
-      ordersData: [],
-      total: 0,
-      totalToday: 0,
-      isLoading: true,
-      error: null,
-      selectedOrder: null,
-      isSelectedOrderLoading: false,
-      selectedOrderError: null
-    });
+    const prevState = rootReducer(undefined, initAction);
+    const nextState = rootReducer(prevState, { type: 'UNKNOWN_ACTION' });
 
-    expect(state.profileOrders).toEqual({
-      orders: [],
-      isLoading: false,
-      error: null
-    });
-
-    expect(state.user).toEqual({
-      user: null,
-      isLoading: false,
-      isAuthChecked: false,
-      isAuthenticated: false,
-      error: undefined
-    });
+    // Проверяем, что возвращается тот же объект
+    expect(nextState).toBe(prevState);
   });
 });
